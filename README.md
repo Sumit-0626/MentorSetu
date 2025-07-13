@@ -74,7 +74,7 @@ A comprehensive mentorship platform built with React and Tailwind CSS, designed 
    ```
 
 4. **Open in browser**
-   Navigate to `http://localhost:5173`
+   Navigate to Local:   http://localhost:5176/
 
 ## 📱 Usage
 
