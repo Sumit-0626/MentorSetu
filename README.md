@@ -111,7 +111,7 @@ A comprehensive mentorship platform built with React and Tailwind CSS, designed 
 ## 🧠 How to Run Locally
 
 ```bash
-git clone https://github.com/your-username/mentorsetu.git
+git clone https://github.com/Sumit-0626/MentorSetu.git
 cd mentorsetu
 npm install
 npm run dev
@@ -144,7 +144,7 @@ mentorsetu/
 - `MenteeDashboard`: Comprehensive mentee dashboard
 - `MentorDashboard`: Professional mentor dashboard
 
-## 🎯 Hackathon Features
+##  Features
 
 This project was developed for a hackathon with focus on:
 - **Rapid Development**: Built with modern tools for quick iteration
