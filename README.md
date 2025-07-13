@@ -59,7 +59,7 @@ A comprehensive mentorship platform built with React and Tailwind CSS, designed 
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Sumit-0626/MentorSetu.git
    cd mentorsetu
    ```
 
