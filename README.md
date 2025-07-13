@@ -94,26 +94,49 @@ A comprehensive mentorship platform built with React and Tailwind CSS, designed 
 
 ## 🎨 Design Features
 
-- **Modern UI**: Clean, professional design
-- **Color Scheme**: Indigo-based theme with proper contrast
-- **Typography**: Clear hierarchy and readability
-- **Spacing**: Consistent padding and margins
-- **Animations**: Smooth transitions and hover effects
+
+---
+
+## 📸 Demo Screens
+
+- ✅ Landing Page  
+- ✅ Mentee Onboarding  
+- ✅ Mentor Onboarding  
+- ✅ Mentee Dashboard  
+- ✅ Mentor Dashboard  
+- 💬 Chat Preview *(WIP)*
+
+---
+
+## 🧠 How to Run Locally
+
+```bash
+git clone https://github.com/your-username/mentorsetu.git
+cd mentorsetu
+npm install
+npm run dev
+
 
 ## 🔧 Development
 
 ### Project Structure
 ```
-src/
-├── components/          # Reusable components
-├── pages/              # Page components
-│   ├── Auth/          # Authentication pages
-│   ├── dashboards/    # Dashboard pages
-│   └── forms/         # Form components
-├── hooks/             # Custom React hooks
-├── utils/             # Utility functions
-└── assets/            # Static assets
-```
+mentorsetu/
+├── src/
+│ ├── assets/ # images, logos
+│ ├── components/ # reusable UI components
+│ ├── features/
+│ │ ├── mentor/ # mentor-specific screens & logic
+│ │ ├── mentee/ # mentee-specific screens & logic
+│ ├── pages/
+│ │ ├── dashboards/ # dashboards for mentor/mentee
+│ │ ├── onboarding/ # registration/onboarding forms
+│ ├── chat/ # chat feature files
+│ ├── layouts/ # page layouts
+│ ├── utils/ # helper functions
+│ ├── App.jsx # root component
+│ └── main.jsx # app entry
+
 
 ### Key Components
 - `NotificationSystem`: Real-time notification management
