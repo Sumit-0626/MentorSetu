@@ -195,9 +195,32 @@ MentorSetu was ideated, designed, and shipped in a single hackathon sprint! Our 
 ---
 
 ## 📸 Screenshots
+
+                                         Mentee Dashboard
 <img width="1903" height="915" alt="image" src="https://github.com/user-attachments/assets/d1d52cee-a143-4b47-8eb7-b58c573f1acb" />
 <img width="1900" height="911" alt="image" src="https://github.com/user-attachments/assets/1b314586-b71f-4edb-94de-aef3cec904af" />
 <img width="414" height="607" alt="image" src="https://github.com/user-attachments/assets/292a9d12-9049-4fab-9fcc-4f214e740ac7" />
+<img width="1896" height="909" alt="image" src="https://github.com/user-attachments/assets/3e0f8cc1-331e-4d51-850f-8d93bd471870" />
+<img width="1897" height="913" alt="image" src="https://github.com/user-attachments/assets/0fbd6159-27f3-4b01-8cc3-e2c636656432" />
+<img width="638" height="682" alt="image" src="https://github.com/user-attachments/assets/13fa8efa-4a89-4b0d-b005-d92ceb15f856" />
+
+<img width="1896" height="904" alt="image" src="https://github.com/user-attachments/assets/1f168e3e-1669-4af9-8768-10cc9b67e3d0" />
+<img width="1891" height="914" alt="image" src="https://github.com/user-attachments/assets/0149a69a-d44d-4c9d-8177-8d7b073611cf" />
+<img width="1891" height="904" alt="image" src="https://github.com/user-attachments/assets/e41068ea-61ba-46f0-a5c9-f4422fbc93dd" />
+<img width="1893" height="909" alt="image" src="https://github.com/user-attachments/assets/a9fc7b8d-b4e9-4c8e-aafa-681576cb5494" />
+                                        Mentor Dashboard
+<img width="1894" height="900" alt="image" src="https://github.com/user-attachments/assets/d7e0ae1d-7a27-4a4b-a69f-7bf53ce48959" />
+<img width="1666" height="787" alt="image" src="https://github.com/user-attachments/assets/c3821e22-ff2a-4e67-ad1e-96221c34413b" />
+<img width="1285" height="909" alt="image" src="https://github.com/user-attachments/assets/7a62f7ac-f49f-4947-976a-e3fd405dbab4" />
+<img width="1907" height="898" alt="image" src="https://github.com/user-attachments/assets/3c58a497-e852-441c-9e99-c6dbef127863" />
+
+
+
+
+
+
+
+
 
 
 
