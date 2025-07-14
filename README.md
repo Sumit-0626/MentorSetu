@@ -1,7 +1,5 @@
 # 🏆 MentorSetu – Your Bridge to Better Mentorship
 
-![MentorSetu Logo](src/assets/mentorsetu-logo.png)
-
 A comprehensive mentorship platform built with React and Tailwind CSS, designed to connect mentors and mentees for personalized learning experiences.
 
 ---
@@ -186,24 +184,21 @@ MentorSetu was ideated, designed, and shipped in a single hackathon sprint! Our 
 - **Ideation:** We started with a simple question: _How can we make mentorship more human and effective?_
 - **Design:** Rapid prototyping with a focus on real-world usability and hackathon speed.
 - **Build:** React + Vite + Tailwind = lightning-fast development.
-- **Polish:** Realistic data, avatars, and notifications for a human touch.
+- **Polish:** data, avatars, and notifications for a human touch.
 
 ---
 
 ## 👥 Team
 - **Sumit-0626** – [GitHub](https://github.com/Sumit-0626)
-- [Add your teammates!]
+- [Hostel boys]
 
 ---
 
 ## 📸 Screenshots
-> _Add screenshots or GIFs here to wow the judges!_
+<img width="1903" height="915" alt="image" src="https://github.com/user-attachments/assets/d1d52cee-a143-4b47-8eb7-b58c573f1acb" />
+<img width="1900" height="911" alt="image" src="https://github.com/user-attachments/assets/1b314586-b71f-4edb-94de-aef3cec904af" />
+<img width="414" height="607" alt="image" src="https://github.com/user-attachments/assets/292a9d12-9049-4fab-9fcc-4f214e740ac7" />
 
----
 
-## 📄 License
-MIT
 
----
 
-> _MentorSetu: Built with passion, code, and caffeine at [Your Hackathon Name], [Date]!_
