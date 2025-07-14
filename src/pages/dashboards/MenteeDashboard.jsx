@@ -11,6 +11,7 @@ import {
   FaCalendarAlt,
   FaBookOpen,
   FaUsers,
+  FaComments,
 } from "react-icons/fa";
 import NotificationSystem from "../../components/NotificationSystem";
 import AnalyticsChart from "../../components/AnalyticsChart";
@@ -44,6 +45,8 @@ const MenteeDashboard = () => {
   const [feedbackModal, setFeedbackModal] = useState({ open: false, session: null });
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  // Track sent requests
+  const [sentRequests, setSentRequests] = useState([]);
 
   useEffect(() => {
     const storedData = localStorage.getItem("menteeInfo");
@@ -58,6 +61,13 @@ const MenteeDashboard = () => {
       const mentee = JSON.parse(storedData);
       const myBookings = allBookings.filter(b => b.menteeId === mentee.id);
       setUpcomingSessions(myBookings);
+    }
+    // Load sent requests from localStorage
+    const menteeData = JSON.parse(localStorage.getItem("menteeInfo"));
+    if (menteeData) {
+      const requests = JSON.parse(localStorage.getItem("menteeRequests")) || [];
+      const myRequests = requests.filter(r => r.id === menteeData.id).map(r => r.mentorId);
+      setSentRequests(myRequests);
     }
   }, [navigate]);
 
@@ -106,6 +116,32 @@ const MenteeDashboard = () => {
     setRating(0);
     setReview("");
     alert("Thank you for your feedback!");
+  };
+
+  const handleConnect = (mentor) => {
+    if (!menteeData) return;
+    const existingRequests = JSON.parse(localStorage.getItem("menteeRequests")) || [];
+    // Prevent duplicate requests
+    if (existingRequests.some(r => r.id === menteeData.id && r.mentorId === mentor.id)) return;
+    const newRequest = {
+      ...menteeData,
+      mentorId: mentor.id,
+      mentorName: mentor.name,
+    };
+    localStorage.setItem("menteeRequests", JSON.stringify([...existingRequests, newRequest]));
+    setSentRequests(prev => [...prev, mentor.id]);
+    // Add notification for mentor
+    const mentorNotificationsKey = `mentorNotifications_${mentor.id}`;
+    const mentorNotifications = JSON.parse(localStorage.getItem(mentorNotificationsKey) || "[]");
+    mentorNotifications.unshift({
+      id: Date.now(),
+      type: "request",
+      title: "New Mentee Request",
+      message: `${menteeData.fullName} has sent you a connection request!`,
+      time: new Date().toLocaleString(),
+      read: false,
+    });
+    localStorage.setItem(mentorNotificationsKey, JSON.stringify(mentorNotifications));
   };
 
   return (
@@ -294,27 +330,54 @@ const MenteeDashboard = () => {
           </div>
         </div>
 
+        {/* Chat with Mentors Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+          <h3 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200 flex items-center gap-2">
+            <FaComments className="text-indigo-500" /> Chat with Mentors
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {recommendedMentors.map((mentor) => (
+              <div key={mentor.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 flex flex-col items-center">
+                <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">{mentor.name}</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{mentor.expertise}</p>
+                <button
+                  className="w-full sm:w-auto bg-neutral-700 hover:bg-neutral-800 text-white py-2 rounded text-sm transition-colors mt-2"
+                  onClick={() => navigate(`/chat/${mentor.id}/${menteeData.id}/mentee`)}
+                >
+                  Chat
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Recommended Mentors */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
           <h3 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">Recommended Mentors</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {recommendedMentors.map((mentor) => (
-              <div key={mentor.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div key={mentor.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:shadow-md transition-shadow flex flex-col h-full">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-gray-800 dark:text-gray-200">{mentor.name}</h4>
                   <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">{mentor.availability}</span>
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{mentor.expertise}</p>
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-sm mb-4">
                   <div className="flex items-center space-x-1">
                     <FaStar className="text-yellow-400 text-xs" />
                     <span>{mentor.rating}</span>
                   </div>
                   <span className="text-gray-500">{mentor.sessions} sessions</span>
                 </div>
-                <button className="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded text-sm">
-                  Connect
-                </button>
+                <div className="flex flex-col sm:flex-row gap-2 mt-auto w-full">
+                  <button
+                    className={`w-full sm:w-1/2 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded text-sm transition-colors ${sentRequests.includes(mentor.id) ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    disabled={sentRequests.includes(mentor.id)}
+                    onClick={() => handleConnect(mentor)}
+                  >
+                    {sentRequests.includes(mentor.id) ? 'Request Sent' : 'Connect'}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

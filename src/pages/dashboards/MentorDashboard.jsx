@@ -79,14 +79,21 @@ const MentorDashboard = () => {
   const [showNotif, setShowNotif] = useState(false);
   useEffect(() => {
     if (mentorId) {
-      setNotifications(getNotifications(mentorId));
+      // Load notifications from mentorNotifications_{mentorId}
+      const mentorNotificationsKey = `mentorNotifications_${mentorId}`;
+      const mentorNotifications = JSON.parse(localStorage.getItem(mentorNotificationsKey) || "[]");
+      setNotifications(mentorNotifications);
     }
   }, [mentorId]);
   const unreadCount = notifications.filter(n => !n.read).length;
   const handleNotifClick = () => setShowNotif((s) => !s);
   const handleMarkAsRead = (id) => {
-    markNotificationAsRead(mentorId, id);
-    setNotifications(getNotifications(mentorId));
+    if (!mentorId) return;
+    const mentorNotificationsKey = `mentorNotifications_${mentorId}`;
+    const mentorNotifications = JSON.parse(localStorage.getItem(mentorNotificationsKey) || "[]");
+    const updated = mentorNotifications.map(n => n.id === id ? { ...n, read: true } : n);
+    localStorage.setItem(mentorNotificationsKey, JSON.stringify(updated));
+    setNotifications(updated);
   };
 
   // Call Availability State
