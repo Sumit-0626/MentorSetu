@@ -2,148 +2,74 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MenteeOnboarding = () => {
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
+    id: Date.now(),
     fullName: "",
+    age: "",
+    gender: "",
+    location: "",
+    learningGoal: "",
+    languagePreference: "",
     education: "",
-    goal: "",
-    domain: "",
-    language: "",
-    skills: [],
     description: "",
   });
+  const navigate = useNavigate();
+  const [showCustomEducation, setShowCustomEducation] = useState(false);
+  const [showCustomLanguage, setShowCustomLanguage] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "skills") {
-      const skillsArray = value.split(",").map((skill) => skill.trim());
-      setFormData((prev) => ({ ...prev, skills: skillsArray }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("menteeInfo", JSON.stringify(formData));
+    localStorage.setItem("menteeInfo", JSON.stringify(form));
     navigate("/mentee-dashboard");
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center px-4 py-10">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-2xl"
-      >
-        <h2 className="text-2xl font-bold text-indigo-700 mb-6 text-center">Mentee Onboarding</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <label className="block">
-            <span className="text-gray-700 dark:text-gray-200">Full Name</span>
-            <input
-              type="text"
-              name="fullName"
-              required
-              value={formData.fullName}
-              onChange={handleChange}
-              className="mt-1 w-full p-2 rounded border dark:bg-gray-700 dark:text-white"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-gray-700 dark:text-gray-200">Education Level</span>
-            <select
-              name="education"
-              required
-              value={formData.education}
-              onChange={handleChange}
-              className="mt-1 w-full p-2 rounded border dark:bg-gray-700 dark:text-white"
-            >
-              <option value="">-- Select --</option>
-              <option value="College Student">College Student</option>
-              <option value="Working Professional">Working Professional</option>
-              <option value="School Student">School Student</option>
-              <option value="Fresher / Job Seeker">Fresher / Job Seeker</option>
-            </select>
-          </label>
-
-          <label className="block md:col-span-2">
-            <span className="text-gray-700 dark:text-gray-200">Learning Goal</span>
-            <input
-              type="text"
-              name="goal"
-              required
-              value={formData.goal}
-              onChange={handleChange}
-              placeholder="e.g. I want to become a frontend developer"
-              className="mt-1 w-full p-2 rounded border dark:bg-gray-700 dark:text-white"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-gray-700 dark:text-gray-200">Preferred Domain</span>
-            <select
-              name="domain"
-              required
-              value={formData.domain}
-              onChange={handleChange}
-              className="mt-1 w-full p-2 rounded border dark:bg-gray-700 dark:text-white"
-            >
-              <option value="">-- Select Domain --</option>
-              <option value="Web Development">Web Development</option>
-              <option value="Data Science">Data Science</option>
-              <option value="AI/ML">AI/ML</option>
-              <option value="Mobile Development">Mobile Development</option>
-              <option value="Cybersecurity">Cybersecurity</option>
-              <option value="Cloud/DevOps">Cloud / DevOps</option>
-            </select>
-          </label>
-
-          <label className="block">
-            <span className="text-gray-700 dark:text-gray-200">Preferred Language</span>
-            <input
-              type="text"
-              name="language"
-              required
-              value={formData.language}
-              onChange={handleChange}
-              placeholder="e.g. Hindi, English"
-              className="mt-1 w-full p-2 rounded border dark:bg-gray-700 dark:text-white"
-            />
-          </label>
-
-          <label className="block md:col-span-2">
-            <span className="text-gray-700 dark:text-gray-200">Current Skills (comma-separated)</span>
-            <input
-              type="text"
-              name="skills"
-              value={formData.skills.join(", ")}
-              onChange={handleChange}
-              placeholder="e.g. HTML, Python, C"
-              className="mt-1 w-full p-2 rounded border dark:bg-gray-700 dark:text-white"
-            />
-          </label>
-
-          <label className="block md:col-span-2">
-            <span className="text-gray-700 dark:text-gray-200">Briefly Describe Your Problem / Learning Need</span>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={3}
-              className="mt-1 w-full p-2 rounded border dark:bg-gray-700 dark:text-white"
-            />
-          </label>
-        </div>
-
-        <button
-          type="submit"
-          className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700"
-        >
-          Submit & Continue to Dashboard
-        </button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg space-y-4">
+        <h2 className="text-2xl font-bold text-indigo-600 mb-2">Mentee Onboarding</h2>
+        <input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Full Name" required className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        <input name="age" value={form.age} onChange={handleChange} placeholder="Age" type="number" min="10" max="100" required className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        <select name="gender" value={form.gender} onChange={handleChange} required className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white">
+          <option value="">Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+        <input name="location" value={form.location} onChange={handleChange} placeholder="Location (City, Country)" required className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        <input name="learningGoal" value={form.learningGoal} onChange={handleChange} placeholder="Learning Goal (e.g. Become a frontend dev)" required className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        <select name="education" value={form.education} onChange={e => {
+          setForm({ ...form, education: e.target.value });
+          setShowCustomEducation(e.target.value === "Other");
+        }} required className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white">
+          <option value="">Education Background</option>
+          <option value="School Student">School Student</option>
+          <option value="College Student">College Student</option>
+          <option value="Working Professional">Working Professional</option>
+          <option value="Fresher / Job Seeker">Fresher / Job Seeker</option>
+          <option value="Other">Other</option>
+        </select>
+        {showCustomEducation && (
+          <input name="customEducation" value={form.customEducation || ""} onChange={e => setForm({ ...form, customEducation: e.target.value, education: e.target.value })} placeholder="Enter your education" className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        )}
+        <select name="languagePreference" value={form.languagePreference} onChange={e => {
+          setForm({ ...form, languagePreference: e.target.value });
+          setShowCustomLanguage(e.target.value === "Other");
+        }} required className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white">
+          <option value="">Preferred Language</option>
+          <option value="English">English</option>
+          <option value="Hindi">Hindi</option>
+          <option value="Gujarati">Gujarati</option>
+          <option value="Marathi">Marathi</option>
+          <option value="Bengali">Bengali</option>
+          <option value="Other">Other</option>
+        </select>
+        {showCustomLanguage && (
+          <input name="customLanguage" value={form.customLanguage || ""} onChange={e => setForm({ ...form, customLanguage: e.target.value, languagePreference: e.target.value })} placeholder="Enter your language" className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        )}
+        <textarea name="description" value={form.description} onChange={handleChange} placeholder="Describe your problem or what you want to learn" rows={3} required className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Continue</button>
       </form>
     </div>
   );

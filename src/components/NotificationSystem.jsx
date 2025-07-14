@@ -189,7 +189,17 @@ const NotificationSystem = ({ userType }) => {
                           <span className="text-xs text-gray-500 dark:text-gray-400">
                             {notification.time}
                           </span>
-                          <button className="text-xs text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-medium">
+                          <button
+                            className={`text-xs font-semibold px-3 py-1 rounded transition-all
+                              ${notification.action === 'accept' ? 'bg-green-500 hover:bg-green-600 text-white' : ''}
+                              ${notification.action === 'join' ? 'bg-blue-500 hover:bg-blue-600 text-white' : ''}
+                              ${notification.action === 'view' ? 'bg-indigo-500 hover:bg-indigo-600 text-white' : ''}
+                              ${notification.action === 'chat' ? 'bg-purple-500 hover:bg-purple-600 text-white' : ''}
+                              ${notification.action === 'celebrate' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : ''}
+                              ${notification.action !== 'accept' && notification.action !== 'join' && notification.action !== 'view' && notification.action !== 'chat' && notification.action !== 'celebrate' ? 'bg-gray-300 hover:bg-gray-400 text-gray-800' : ''}
+                              min-w-[64px] text-center`}
+                            style={{marginLeft: 8}}
+                          >
                             {notification.action}
                           </button>
                         </div>

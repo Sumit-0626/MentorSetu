@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import NotificationSystem from "../../components/NotificationSystem";
 import AnalyticsChart from "../../components/AnalyticsChart";
+import { addMentorPoints } from "../../utils/mentorPoints";
 
 const MenteeDashboard = () => {
   const navigate = useNavigate();
@@ -39,12 +40,24 @@ const MenteeDashboard = () => {
     { id: 3, name: "Priya Sharma", expertise: "Machine Learning", rating: 4.7, sessions: 156, availability: "Available" },
   ]);
 
+  const [upcomingSessions, setUpcomingSessions] = useState([]);
+  const [feedbackModal, setFeedbackModal] = useState({ open: false, session: null });
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+
   useEffect(() => {
     const storedData = localStorage.getItem("menteeInfo");
     if (!storedData) {
       navigate("/mentee-onboarding");
     } else {
       setMenteeData(JSON.parse(storedData));
+    }
+    // Fetch upcoming sessions for this mentee
+    const allBookings = JSON.parse(localStorage.getItem("sessionBookings")) || [];
+    if (storedData) {
+      const mentee = JSON.parse(storedData);
+      const myBookings = allBookings.filter(b => b.menteeId === mentee.id);
+      setUpcomingSessions(myBookings);
     }
   }, [navigate]);
 
@@ -54,6 +67,46 @@ const MenteeDashboard = () => {
 
   const progressPercentage = (learningProgress.completedSessions / learningProgress.totalSessions) * 100;
   const weeklyProgressPercentage = (learningProgress.weeklyCompleted / learningProgress.weeklyGoal) * 100;
+
+  // Helper: check if session is past
+  const isSessionPast = (dateTime) => new Date(dateTime) < new Date();
+
+  // Submit feedback
+  const handleSubmitFeedback = () => {
+    if (!feedbackModal.session) return;
+    const feedbacks = JSON.parse(localStorage.getItem("mentorFeedbacks") || "[]");
+    feedbacks.push({
+      mentorId: feedbackModal.session.mentorId,
+      mentorName: feedbackModal.session.mentorName,
+      menteeId: menteeData.id,
+      menteeName: menteeData.fullName,
+      rating,
+      review,
+      date: new Date().toISOString(),
+    });
+    localStorage.setItem("mentorFeedbacks", JSON.stringify(feedbacks));
+
+    // Award points for session completion (if not already awarded)
+    const mentorId = feedbackModal.session.mentorId;
+    const sessionKey = `${feedbackModal.session.menteeId}-${feedbackModal.session.mentorId}-${feedbackModal.session.dateTime}`;
+    const completedSessions = JSON.parse(localStorage.getItem("completedSessions") || "[]");
+    if (!completedSessions.includes(sessionKey)) {
+      addMentorPoints(mentorId, "complete_session", { menteeId: feedbackModal.session.menteeId, session: sessionKey });
+      completedSessions.push(sessionKey);
+      localStorage.setItem("completedSessions", JSON.stringify(completedSessions));
+    }
+    // Award points for positive feedback
+    addMentorPoints(mentorId, "positive_feedback", { menteeId: feedbackModal.session.menteeId, rating, review });
+    // Award extra points for 5-star rating
+    if (rating === 5) {
+      addMentorPoints(mentorId, "five_star_rating", { menteeId: feedbackModal.session.menteeId, review });
+    }
+
+    setFeedbackModal({ open: false, session: null });
+    setRating(0);
+    setReview("");
+    alert("Thank you for your feedback!");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-6">
@@ -126,6 +179,83 @@ const MenteeDashboard = () => {
             <p className="text-sm text-gray-600 dark:text-gray-300">days of consistent learning</p>
           </div>
         </div>
+
+        {/* Upcoming Booked Sessions */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+          <h3 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">Upcoming Booked Sessions</h3>
+          {upcomingSessions.length === 0 ? (
+            <p className="text-gray-500">No upcoming sessions booked yet.</p>
+          ) : (
+            <div className="space-y-4">
+              {upcomingSessions.map((session, idx) => {
+                const past = isSessionPast(session.dateTime);
+                // Check if feedback already given
+                const feedbacks = JSON.parse(localStorage.getItem("mentorFeedbacks") || "[]");
+                const alreadyRated = feedbacks.some(f => f.mentorId === session.mentorId && f.menteeId === menteeData.id && f.date && new Date(f.date) > new Date(session.dateTime));
+                return (
+                  <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded">
+                    <div>
+                      <p className="font-medium">Mentor: <span className="text-indigo-600">{session.mentorName}</span></p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Date & Time: {new Date(session.dateTime).toLocaleString()}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FaCalendarAlt className="text-indigo-500 text-2xl" />
+                      {past && !alreadyRated && (
+                        <button
+                          className="ml-2 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                          onClick={() => setFeedbackModal({ open: true, session })}
+                        >
+                          Rate Mentor
+                        </button>
+                      )}
+                      {past && alreadyRated && (
+                        <span className="ml-2 text-green-600 text-xs font-semibold">Feedback Submitted</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Feedback Modal */}
+        {feedbackModal.open && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md relative">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                onClick={() => setFeedbackModal({ open: false, session: null })}
+              >
+                &times;
+              </button>
+              <h2 className="text-2xl font-bold mb-4 text-indigo-600">Rate {feedbackModal.session?.mentorName}</h2>
+              <div className="mb-4 flex gap-2">
+                {[1,2,3,4,5].map(star => (
+                  <FaStar
+                    key={star}
+                    className={star <= rating ? "text-yellow-400 text-2xl cursor-pointer" : "text-gray-300 text-2xl cursor-pointer"}
+                    onClick={() => setRating(star)}
+                  />
+                ))}
+              </div>
+              <textarea
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded mb-4 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+                rows={3}
+                placeholder="Write your review (optional)"
+                value={review}
+                onChange={e => setReview(e.target.value)}
+              />
+              <button
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded font-semibold"
+                disabled={rating === 0}
+                onClick={handleSubmitFeedback}
+              >
+                Submit Feedback
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Profile Info and Recent Activities */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
